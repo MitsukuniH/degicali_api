@@ -19,7 +19,8 @@ async def get_goods_list(db:AsyncSession) -> List[Tuple[int, str, int]]:
             select(
                 goods_model.Goods.id,
                 goods_model.Goods.name,
-                goods_model.Goods.type,
+                goods_model.Goods.category,
+                goods_model.Goods.price,
                 goods_model.Goods.posted_at
             )
         )
@@ -41,7 +42,7 @@ async def update_goods(
     original.name = update.name
     original.describe = update.describe
     original.price = update.price
-    
+
     db.add(original)
     await db.commit()
     await db.refresh(original)

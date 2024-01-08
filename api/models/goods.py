@@ -9,7 +9,7 @@ class Goods(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(128))
     describe = Column(String(524))
-    type = Column(Integer)
+    category = Column(Integer)
     price = Column(Float)
     posted_at = Column(DateTime, default=datetime.utcnow)
 
