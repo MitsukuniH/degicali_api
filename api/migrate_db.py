@@ -1,12 +1,15 @@
 from sqlalchemy import create_engine
-from api.models.goods import Base
+from api.models.goods import Base as Goods_Base
+from api.models.user import Base as User_Base
 
 DB_URL = "mysql+pymysql://root@db:3306/degicali_data?charset=utf8"
 engine = create_engine(DB_URL, echo=True)
 
 def reset_database():
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
+    Goods_Base.metadata.drop_all(bind=engine)
+    User_Base.metadata.drop_all(bind=engine)
+    Goods_Base.metadata.create_all(bind=engine)
+    User_Base.metadata.create_all(bind=engine)
 
 if __name__ == "__main__":
     reset_database()
