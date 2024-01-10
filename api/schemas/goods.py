@@ -1,4 +1,3 @@
-from typing import Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -14,8 +13,9 @@ class GoodsUpdate(BaseModel):
     price: float = Field(None, ge=0, example=0.1)
 
 class GoodsCreate(GoodsBase):
-    pass
-class GoodsCreateResponse(GoodsCreate):
+    owner_id: int
+
+class GoodsCreateResponse(GoodsBase):
     id: int
     posted_at: datetime
 
@@ -28,3 +28,6 @@ class Goods(GoodsBase):
 
     class Config:
         orm_mode = True
+
+class GoodsOwner(Goods):
+    owner_id: int
