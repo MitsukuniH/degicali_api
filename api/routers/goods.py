@@ -19,7 +19,7 @@ async def list_goods(
     return await goods_crud.get_goods_list(db)
 
 @router.get("/goods/{goods_id}", response_model=goods_schema.GoodsOwner)
-async def list_goods(
+async def goods(
     goods_id: int, db:AsyncSession=Depends(get_db)
 ):
     goods = await goods_crud.get_goods(db, goods_id=goods_id)

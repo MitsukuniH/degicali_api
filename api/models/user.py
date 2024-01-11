@@ -13,3 +13,5 @@ class User(Base):
     password = Column(String(16))
     token = Column(String(32))
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    chat = relationship("Chat", backref="user")
