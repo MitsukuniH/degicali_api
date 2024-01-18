@@ -15,7 +15,7 @@ async def get_goods(db:AsyncSession, goods_id: int) -> Optional[goods_model.Good
 
     return goods[0] if goods is not None else None
 
-async def get_goods_list(db:AsyncSession) -> List[Tuple[int, str, int]]:
+async def get_goods_list(db:AsyncSession) -> List[Tuple[int, str, int, int, str, int]]:
     result: Result = await (
         db.execute(
             select(
@@ -24,7 +24,22 @@ async def get_goods_list(db:AsyncSession) -> List[Tuple[int, str, int]]:
                 goods_model.Goods.category,
                 goods_model.Goods.price,
                 goods_model.Goods.posted_at
-            )
+            ).filter(goods_model.Goods.is_sale)
+        )
+    )
+    return result.all()
+
+async def get_goods_list_on_community(db:AsyncSession, community_id) -> List[Tuple[int, str, int, int, str, int]]:
+    result: Result = await (
+        db.execute(
+            select(
+                goods_model.Goods.id,
+                goods_model.Goods.name,
+                goods_model.Goods.category,
+                goods_model.Goods.price,
+                goods_model.Goods.posted_at,
+                goods_model.Goods.community_id
+            ).filter(goods_model.Goods.is_sale, goods_model.Goods.community_id==community_id)
         )
     )
     return result.all()
@@ -52,6 +67,17 @@ async def update_goods(
     await db.commit()
     await db.refresh(original)
     return original
+
+async def toggle_sale(
+    db: AsyncSession, original: goods_model.Goods
+) -> goods_model.Goods:
+    original.is_sale = not original.is_sale
+
+    db.add(original)
+    await db.commit()
+    await db.refresh(original)
+    return original
+    
 
 async def delete_goods(
     db: AsyncSession, original: goods_model.Goods

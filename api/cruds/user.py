@@ -63,3 +63,15 @@ async def create_user(
 def create_token(n):
    randlst = [random.choice(string.ascii_letters + string.digits) for i in range(n)]
    return ''.join(randlst)
+
+async def update_user(
+    db: AsyncSession, update: user_schema.UserUpdate, original: user_model.User
+) -> user_model.User:
+    original.username = update.username
+    original.email = update.email
+    original.balance = update.balance
+
+    db.add(original)
+    await db.commit()
+    await db.refresh(original)
+    return original

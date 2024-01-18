@@ -7,7 +7,7 @@ class Chat(Base):
 
     id = Column(Integer, primary_key=True)
     content = Column(String(1024))
-    community = Column(String(128))
     posted_at = Column(DateTime, default=datetime.utcnow)
 
     user_id = Column(Integer, ForeignKey('users.id'))
+    community_id = Column(Integer, ForeignKey('communities.id'), nullable=True)

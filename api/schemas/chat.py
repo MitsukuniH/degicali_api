@@ -4,7 +4,7 @@ from datetime import datetime
 class ChatBase(BaseModel):
     user_id: int = Field(None, example=1)
     content: str = Field(None, example="cute cat")
-    community: str = Field(None, example="cat")
+    community_id: int = Field(None, example=0)
 
 class ChatCreate(ChatBase):
     pass

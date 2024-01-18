@@ -14,6 +14,18 @@ async def get_goods_user(db:AsyncSession, goods_id: int) -> Optional[gu_model.Go
 
     return goods[0] if goods is not None else None
 
+async def get_goods_user_list(db:AsyncSession) -> List[Tuple[int, int, int]]:
+    result: Result = await (
+        db.execute(
+            select(
+                gu_model.GoodsUser.id,
+                gu_model.GoodsUser.owner_id,
+                gu_model.GoodsUser.goods_id
+            )
+        )
+    )
+    return result.all()
+
 async def create_goods_user(
     db: AsyncSession, gu: gu_schema.GUBase
 ) -> gu_model.GoodsUser:

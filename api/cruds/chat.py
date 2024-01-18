@@ -20,24 +20,24 @@ async def get_chats(db:AsyncSession, user_id: int) -> List[Tuple[int, str, str, 
             select(
                 chat_model.Chat.id,
                 chat_model.Chat.content,
-                chat_model.Chat.community,
                 chat_model.Chat.user_id,
+                chat_model.Chat.community_id,
                 chat_model.Chat.posted_at
             ).filter(chat_model.Chat.user_id == user_id)
         )
     )
     return result.all()
 
-async def get_chats_on_community(db:AsyncSession, community: str) -> List[Tuple[int, str, str, int]]:
+async def get_chats_on_community(db:AsyncSession, community_id: int) -> List[Tuple[int, str, int, str]]:
     result: Result = await (
         db.execute(
             select(
                 chat_model.Chat.id,
                 chat_model.Chat.content,
-                chat_model.Chat.community,
                 chat_model.Chat.user_id,
+                chat_model.Chat.community_id,
                 chat_model.Chat.posted_at
-            ).filter(chat_model.Chat.community == community)
+            ).filter(chat_model.Chat.community_id == community_id)
         )
     )
     return result.all()

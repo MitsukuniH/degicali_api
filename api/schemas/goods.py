@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import Union
 
 class GoodsBase(BaseModel):
     name: str = Field(None, example="photo_1")
@@ -14,6 +15,7 @@ class GoodsUpdate(BaseModel):
 
 class GoodsCreate(GoodsBase):
     owner_id: int
+    community_id: int
 
 class GoodsCreateResponse(GoodsBase):
     id: int
@@ -31,3 +33,6 @@ class Goods(GoodsBase):
 
 class GoodsOwner(Goods):
     owner_id: int
+
+class GoodsSale(Goods):
+    is_sale: bool

@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, Response
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
+from typing import List, Union
+from starlette.responses import StreamingResponse
 
+import shutil
 import api.schemas.goods as goods_schema
 import api.schemas.goods_user as gu_schema
 import api.cruds.goods as goods_crud
@@ -13,12 +15,14 @@ router = APIRouter()
 
 @router.get("/goods", response_model=List[goods_schema.Goods])
 async def list_goods(
-    db:AsyncSession=Depends(get_db)
+    db:AsyncSession=Depends(get_db), community_id:Union[int, None]=None
 ):
-    
-    return await goods_crud.get_goods_list(db)
+    if community_id is None:
+        return await goods_crud.get_goods_list(db)
+    else:
+        return await goods_crud.get_goods_list_on_community(db, community_id)
 
-@router.get("/goods/{goods_id}", response_model=goods_schema.GoodsOwner)
+@router.get("/goods/{goods_id}", response_model=goods_schema.GoodsSale)
 async def goods(
     goods_id: int, db:AsyncSession=Depends(get_db)
 ):
@@ -34,9 +38,33 @@ async def goods(
 async def create_goods(
     goods_body: goods_schema.GoodsCreate, db: AsyncSession = Depends(get_db)
 ):
-    goods = await goods_crud.create_goods(db, goods_body)
-    
-    return goods
+    return await goods_crud.create_goods(db, goods_body)
+
+@router.get(
+    "/goods/{goods_id}/image", 
+    responses = {200: {"content": {"image/png": {}}}},
+    response_class=Response
+)
+def get_uploadfile(
+    goods_id
+):
+    path = f'api/images/{goods_id}.png'
+    file = open(path, "rb").read()
+    if file is None:
+        raise 
+    return Response(content=file,media_type="image/png")
+
+@router.post("/goods/{goods_id}/image")
+def upload_image(
+    goods_id, image: UploadFile
+):
+    path = f'api/images/{goods_id}.png'
+    with open(path, 'wb+') as buffer:
+        shutil.copyfileobj(image.file, buffer)
+    return {
+        'filename': path,
+        'type': image.content_type
+    }
 
 @router.put("/goods/{goods_id}", response_model=goods_schema.GoodsCreateResponse)
 async def update_goods(
@@ -57,3 +85,4 @@ async def delete_task(
         raise HTTPException(status_code=404, detail="Goods not found")
     
     return await goods_crud.delete_goods(db, original=goods)
+

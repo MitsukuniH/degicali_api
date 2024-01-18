@@ -11,9 +11,9 @@ router = APIRouter()
 
 @router.get("/chats/community/{community_id}", response_model=List[chat_schema.Chat])
 async def chats_on_community(
-    community: str, db:AsyncSession=Depends(get_db)
+    community_id: int, db:AsyncSession=Depends(get_db)
 ):
-    return await chat_crud.get_chats_on_community(db, community=community)
+    return await chat_crud.get_chats_on_community(db, community_id=community_id)
 
 @router.get("/chats/user/{user_id}", response_model=List[chat_schema.Chat])
 async def chats_on_user(

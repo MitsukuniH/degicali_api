@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-
+from typing import Optional
 class Token(BaseModel):
     id: int
     token: str
@@ -12,6 +12,10 @@ class AuthForm(BaseModel):
     id: int
     token: str
 
+class UserUpdate(BaseModel):
+    username: str
+    email:str
+    balance: float
 
 class SignInForm(BaseModel):
     username: str
@@ -32,6 +36,7 @@ class PublicUserInfo(BaseModel):
 class User(PublicUserInfo):
     email: str
     full_name: str
+    balance: float
 
 
 class UserInDB(User):
